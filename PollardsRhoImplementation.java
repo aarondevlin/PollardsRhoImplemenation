@@ -25,6 +25,22 @@ public class PollardsRho {
 
 	public static void main(String[] args) {
 
+
+		// Testing exp()
+
+		BigInteger au[] = new BigInteger[2];
+		au[0] = BigInteger.valueOf(12);
+		au[1] = BigInteger.valueOf(61833);
+
+		BigInteger mu = BigInteger.valueOf(2);
+		BigInteger du = BigInteger.valueOf(154);
+		BigInteger pu = BigInteger.valueOf(65519);
+
+		BigInteger testexp[] = new BigInteger[2];
+		testexp = exp(au, mu, du, pu);
+
+
+
 		// USER INPUT PARAMETERS FOR a, d, n, & p
 
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
@@ -106,22 +122,26 @@ public class PollardsRho {
 
 
 
-	// EXP(): use the mul() function to multiply a*a and loop until the desired exponent "m" is reached
-	// For the algorithm in the discrete logarithm slides, b = 1 means b = (0, 1), if we are using that algorithm
+	// Exponentiation Algorithm
+	// Requires O(k) group operations, where k is the number of bits in m
+	// This is much faster than a function that multiplies a*a, looping until the desired exponent "m" is reached
 	private static BigInteger[] exp(BigInteger[] avar, BigInteger mvar, BigInteger dvar, BigInteger pvar) {
 
-		BigInteger[] aprod = avar;
-		int i = 1;
+		BigInteger bee[] = new BigInteger[2];
+		int numofbits = mvar.bitLength();   // Find k
+		bee[0] = BigInteger.ZERO;    // Initialize b = ( 0, 1 )
+		bee[1] = BigInteger.ONE;
 
-		// While i is less than mvar, we will multiply a * a * a *.... b/c compareTo outputs -1 (ie < 0) if i < mvar
-		// If m = 2, we want to square a, so first iteration: 1 < 2, so we mul a * a, and are done.
-		while (BigInteger.valueOf(i).compareTo(mvar) < 0) {
+		for (int i = numofbits - 1; i >= 0; i--) {
+			bee = mul(bee, bee, dvar, pvar);      // For every bit i in m, b = b * b
 
-			aprod = mul(aprod, avar, dvar, pvar);
-			i++;
+			if (mvar.testBit(i)) {      // If the i-th bit of m = 1, then b = b * a
+				bee = mul(bee, avar, dvar, pvar);
+			}
+
 		}
+		return bee;
 
-		return aprod;
 	}
 
 
@@ -232,7 +252,7 @@ public class PollardsRho {
 
 
 
-	// Check() creates a random m, then from that it creates a b, then computes m' with rho(), then validates m' is correct.
+	// Check() creates a random m, then from this it creates b. Then m' is computed with rho(), then validates m' is correct.
 	// The number of steps required, "k", is returned.
 	private static BigInteger check(BigInteger[] avar, BigInteger dvar, BigInteger pvar, BigInteger nvar) {
 
