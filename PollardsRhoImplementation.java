@@ -25,22 +25,6 @@ public class PollardsRho {
 
 	public static void main(String[] args) {
 
-
-		// Testing exp()
-
-		BigInteger au[] = new BigInteger[2];
-		au[0] = BigInteger.valueOf(12);
-		au[1] = BigInteger.valueOf(61833);
-
-		BigInteger mu = BigInteger.valueOf(2);
-		BigInteger du = BigInteger.valueOf(154);
-		BigInteger pu = BigInteger.valueOf(65519);
-
-		BigInteger testexp[] = new BigInteger[2];
-		testexp = exp(au, mu, du, pu);
-
-
-
 		// USER INPUT PARAMETERS FOR a, d, n, & p
 
 		Scanner reader = new Scanner(System.in);  // Reading from System.in
